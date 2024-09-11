@@ -1,0 +1,1037 @@
+```{r, libraries used}
+  if(!require(rlang)){install.packages("rlang")}
+  library(rlang)
+  if(!require(piecewiseSEM)){install.packages("piecewiseSEM")}
+  library(piecewiseSEM)
+  if(!require(nlme)){install.packages("nlme")}
+  library(nlme)
+  if(!require(readxl)){install.packages("readxl")}
+  library(readxl)
+  if(!require(dplyr)){install.packages("dplyr")}
+  library(dplyr)
+  if(!require(mixtools)){install.packages("mixtools")}
+  library(mixtools)
+  if(!require(emmeans)){install.packages("emmeans")}
+  library(emmeans)
+  if(!require(readr)){install.packages("readr")}
+  library(readr)
+  if(!require(tidyverse)){install.packages("tidyverse")}
+  library(tidyverse)
+  if(!require(data.table)){install.packages("data.table")}
+  library(data.table)
+  if(!require(lubridate)){install.packages("lubridate")}
+  library(lubridate)
+  if(!require(ggplot2)){install.packages("ggplot2")}
+  library(ggplot2)
+  if(!require(ggpubr)){install.packages("ggpubr")}
+  library(ggpubr)
+  if(!require(rstatix)){install.packages("rstatix")}
+  library(rstatix)
+  if(!require(multcompView)){install.packages("multcompView")}
+  library(multcompView)
+  if(!require(knitr)){install.packages("knitr")}
+  library(knitr)
+  if(!require(DT)){install.packages("DT")}
+  library(DT)
+  if(!require(extrafont)){install.packages("extrafont")}
+  library(extrafont)
+  if(!require(easycsv)){install.packages("easycsv")}
+  library(easycsv)
+  if(!require(PairedData)){install.packages("PairedData")}
+  library(PairedData)
+  if(!require(compare)){install.packages("compare")}
+  library(compare)
+  if(!require(pastecs)){install.packages("pastecs")}
+  library(pastecs)
+  if(!require(pwr)){install.packages("pwr")}
+  library(pwr)
+  if(!require(gdata)){install.packages("gdata")}
+  library(gdata)
+  if(!require(skimr)){install.packages("skimr")}
+  library(skimr)
+  if(!require(summarytools)){install.packages("summarytools")}
+  library(summarytools)
+  if(!require(GGally)){install.packages("GGally")}
+  library(GGally)
+  if(!require(BSDA)){install.packages("BSDA")}
+  library(BSDA)
+  if(!requireNamespace("BiocManager", quietly = TRUE))
+    if(!require(BiocManager)){install.packages("BiocManager")}
+  if(!require(ggforce)){install.packages("ggforce")}
+  library(ggforce)
+  if(!require(svglite)){install.packages("svglite")}
+  library(svglite)
+  if(!require(devtools)) install.packages("devtools")
+  if(!require(factoextra)){install.packages("factoextra")}
+  library(factoextra)
+  if(!require(mice)){install.packages("mice")}
+  library(mice)
+  if(!require(miceadds)){install.packages("miceadds")}
+  library(miceadds)
+  if(!require(micemd)){install.packages("micemd")}
+  library(micemd)
+  if(!require(ggmice)){install.packages("ggmice")}
+  library(ggmice)
+  if(!require(missForest)){install.packages("missForest")}
+  library(missForest)
+  if(!require(Hmisc)){install.packages("Hmisc")}
+  library(Hmisc)
+  if(!require(kableExtra)){install.packages("kableExtra")}
+  library(kableExtra)
+  if(!require(gt)){install.packages("gt")}
+  library(gt)
+  if(!require(glue)){install.packages("glue")}
+  library(glue)
+  if(!require(lmerTest)){install.packages("lmerTest")}
+  library(lmerTest)# to get p-value estimations that are not part of the standard lme4 packages
+  if(!require(effects)){install.packages("effects")}
+  library(effects)
+  if(!require(multilevelTools)){install.packages("multilevelTools")}
+  library(multilevelTools)
+  if(!require(RColorBrewer)){install.packages("RColorBrewer")}
+  library(RColorBrewer)
+  #note that gamlss masks functions from mfp and from lmer, so need to be careful
+  if(!require(gamlss)){install.packages("gamlss")}
+  library(gamlss)
+  if(!require(lme4)){install.packages("lme4")}
+  library(lme4)
+  if(!require(mfp)){install.packages("mfp")}
+  library(mfp)
+  if(!require(glmnet)){install.packages("glmnet")}
+  library(glmnet)
+  if(!require(shrink)){install.packages("shrink_1.2.1.tar.gz", repos=NULL, type="source")}
+  library(shrink)
+  if(!require(slm)){install.packages("slm")}
+  library(slm)
+  if(!require(cowplot)){install.packages("cowplot")}
+  library(cowplot)
+  if(!require(lqmm)){install.packages("lqmm")}
+  library(lqmm)
+  if(!require(gridExtra)){install.packages("gridExtra")}
+  library(gridExtra)
+  if(!require(mice)){install.packages("mice")}
+  library(mice)
+  if(!require(tidyr)){install.packages("tidyr")}
+  library(tidyr)
+  if(!require(tibble)){install.packages("tibble")}
+  library(tibble)
+  if(!require(summarytools)){install.packages("summarytools")}
+  library(summarytools)
+  if(!require(childsds)){install.packages("childsds")}
+  library(childsds)
+  if(!require(pedbp)){install.packages("pedbp")}
+  library(pedbp)
+  if(!require(brms)){install.packages("brms")}
+  library(brms)
+
+#please note, not all libraries listed above were used 
+```
+
+
+```{r, data statement}
+#to access data within the I-CAH registry, please apply at https://registry.i-dsd.org/user/login
+#the data used for this analysis cannot be shared without an appropriate data sharing agreement
+```
+
+```{r, subset data and summary statistics of cohort}
+bp_data_young_adult <-
+  subset(bp_data, 
+         age_to_use >20 & age_to_use <40)
+
+bp_data_young_adult_male <- 
+  subset(bp_data_young_adult,
+         Sex.at.birth...Birth=="Male")
+
+bp_data_young_adult_fema <- 
+  subset(bp_data_young_adult,
+         Sex.at.birth...Birth=="Female")
+
+bp_data_young_adult_one_visit <-
+  bp_data_young_adult %>%
+  group_by(id) %>% 
+  slice_max(age_to_use, with_ties = F)
+
+cat("Number of rows")
+nrow(bp_data_young_adult)
+cat("Number of patients")
+length(unique(bp_data_young_adult$id))
+cat("Number of rows male")
+nrow(bp_data_young_adult_male)
+cat("Number of patients male")
+length(unique(bp_data_young_adult_male$id))
+cat("Number of rows fema")
+nrow(bp_data_young_adult_fema)
+cat("Number of patients fema")
+length(unique(bp_data_young_adult_fema$id))
+cat("Frequency of sex id")
+freq(bp_data_young_adult_one_visit$Sex.at.birth...Birth)
+cat("Frequency of sex visit")
+freq(bp_data_young_adult$Sex.at.birth...Birth)
+cat("Number of centres")
+nrow(as.data.frame(freq(bp_data_young_adult$Centre.Name...Centre)))-2
+cat("Frequency of centres")
+freq(bp_data_young_adult$Centre.Name...Centre)
+
+descr(bp_data_young_adult$interpolated_weight)
+descr(bp_data_young_adult$interpolated_height)
+descr(bp_data_young_adult$systolic_imputation_1)
+#descr(bp_data_young_adult$totaltotal_daily_fludro_dose_carried_to_use_with_zero)
+descr(bp_data_young_adult$total_daily_hydrocortisone_equivalent_at_visit)
+
+descr(bp_data_young_adult_male$interpolated_weight)
+descr(bp_data_young_adult_male$age_to_use)
+descr(bp_data_young_adult_fema$interpolated_weight)
+descr(bp_data_young_adult_fema$age_to_use)
+
+freq(bp_data_young_adult_male$Hypertension...Comorbid.Conditions.and.Surgery)
+freq(bp_data_young_adult_fema$Hypertension...Comorbid.Conditions.and.Surgery)
+freq(bp_data_young_adult_one_visit$Hypertension...Comorbid.Conditions.and.Surgery)
+```
+
+```{r, multilevel quantile regression of systolic blood pressure with age and sex}
+library(lqmm)
+bp_data_young_adult_with_systolic <- 
+  subset(bp_data_young_adult, !is.na(systolic_imputation_1))
+systolic_lqmm_fit <- 
+  lqmm::lqmm(fixed = systolic_imputation_1 ~
+               age_to_use + 
+               Sex.at.birth...Birth, 
+                  random = ~1, 
+                  group = id, 
+                  tau = c(
+                    #0.01, 
+                    #0.05, 
+                    0.1, 
+                    0.5, 
+                    0.9#, 
+                    #0.95, 
+                    #0.99
+                    ), 
+                  nK = 11, 
+                  type = "normal", 
+                  data = bp_data_young_adult_with_systolic)
+
+summary(systolic_lqmm_fit)
+```
+
+```{r, plot systolic overall fit}
+individual_line_width_peripheral <- 0.8
+individual_line_width_central <- 1.8
+individual_alpha_lines <- 0.4
+individual_alpha_points <- 0.8
+individual_size_points <- 0.8
+peripheral_line_type <- "longdash"
+
+fitted_values <- 
+  as.data.frame(predict(systolic_lqmm_fit))
+colnames(fitted_values) <- 
+  paste0("systolic_lqmm_fit_", colnames(fitted_values))
+
+bp_data_young_adult_with_systolic_with_fit <-
+  cbind(bp_data_young_adult_with_systolic,
+        fitted_values)
+
+systolic_lqmm_plot <-
+  ggplot(bp_data_young_adult_with_systolic_with_fit,
+        aes(x = age_to_use,
+            colour=Sex.at.birth...Birth)
+       ) +
+  geom_line( 
+       aes(y = systolic_lqmm_fit_0.1),
+       linewidth=individual_line_width_peripheral,
+       alpha=individual_alpha_lines,
+       linetype=peripheral_line_type) +
+  geom_line( 
+       aes(y = systolic_lqmm_fit_0.5),
+       linewidth=individual_line_width_central,
+       alpha=individual_alpha_lines) +
+  geom_line( 
+       aes(y = systolic_lqmm_fit_0.9),
+       linewidth=individual_line_width_peripheral,
+       alpha=individual_alpha_lines,
+       linetype=peripheral_line_type) +
+  geom_point(
+    aes(y=systolic_imputation_0),
+    size=individual_size_points,
+    alpha=individual_alpha_points
+  ) +
+  labs(title = "LQMM Fitted Lines for Different Quantiles",
+       x = "Age (years)",
+       y = "Systolic blood pressure (mmHg)") +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_y_continuous(
+      limits=c(90,160),
+  breaks=c(seq(90,160, by=10)))+
+
+  themepowerpoint
+systolic_lqmm_plot
+ggsave(file="./systolic_lqmm_plot.tif",
+       plot=systolic_lqmm_plot, 
+       device="tiff", 
+       width=10, height=5 , 
+       compression = "lzw")
+
+```
+
+```{r, 5th centiles and 95th centiles}
+#systolic 5th:
+#tau = 0.05##
+#
+#Fixed effects:
+#                             Value Std. Error lower bound upper bound  Pr(>|t|)    
+#(Intercept)              116.36685    4.45203   107.42015    125.3135 < 2.2e-16 ***
+#age_to_use                -0.55075    0.18432    -0.92116     -0.1803 0.0043791 ** 
+#Sex.at.birth...BirthMale   7.76969    1.97017     3.81047     11.7289 0.0002552 ***
+#  
+#systolic 95th  
+#tau = 0.95#
+
+#Fixed effects:
+#                              Value Std. Error lower bound upper bound  Pr(>|t|)    
+#(Intercept)              117.774549   4.429932  108.872266    126.6768 < 2.2e-16 ***
+#age_to_use                 0.455569   0.194730    0.064246      0.8469   0.02343 *  
+#Sex.at.birth...BirthMale   9.130401   2.065561    4.979501     13.2813  5.46e-05 ***  
+#  
+#diastolic 5th:#
+#tau = 0.05
+
+#Fixed effects:
+#                            Value Std. Error lower bound upper bound Pr(>|t|)    
+#(Intercept)              65.89296    3.33380    59.19344     72.5925  < 2e-16 ***
+#age_to_use               -0.21589    0.11166    -0.44028      0.0085  0.05897 .  
+#Sex.at.birth...BirthMale  3.32309    1.36659     0.57682      6.0694  0.01873 *  
+#  
+#diastolic 95th:
+#tau = 0.95#
+
+#Fixed effects:
+#                            Value Std. Error lower bound upper bound  Pr(>|t|)    
+#(Intercept)              67.13595    3.28065    60.54324     73.7287 < 2.2e-16 ***
+#age_to_use                0.68333    0.13180     0.41847      0.9482 4.094e-06 ***
+#Sex.at.birth...BirthMale  4.85816    1.35296     2.13929      7.5770 0.0007617 ***
+  
+print("Girls at age 20 will be systolic range between 5th and 95th of:")
+(117.774549 + 20 * 0.455569) - (116.36685 + 20 * -0.55075)
+print("Girls at age 20 will be diastolic range between 5th and 95th of:")
+(67.13595 + 0.68333 * 20) - (65.89296 + -0.21589 * 20)
+
+  
+print("Girls at age 40 will be systolic range between 5th and 95th of:")
+(117.774549 + 40 * 0.455569) - (116.36685 + 40 * -0.55075)
+print("Girls at age 40 will be diastolic  range between 5th and 95th of:")
+(67.13595 + 0.68333 * 40) - (65.89296 + -0.21589 * 40)
+
+cat("******************")
+  
+print("Boys will be the same range because we've just done a random intercept model")
+```
+
+
+```{r, multilevel quantile regression of diastolic blood pressure with age and sex}
+
+bp_data_young_adult_with_diastolic <- 
+  subset(bp_data_young_adult, !is.na(diastolic_imputation_1))
+
+diastolic_lqmm_fit <- 
+  lqmm::lqmm(fixed = 
+             diastolic_imputation_1 ~ 
+             age_to_use + 
+             Sex.at.birth...Birth, 
+                  random = ~1, 
+                  group = id, 
+                  tau = c(
+                    #0.01, 
+                    #0.05, 
+                    0.1, 
+                    0.5, 
+                    0.9#, 
+                    #0.95, 
+                    #0.99
+                    ), 
+                  nK = 11, 
+                  type = "normal", 
+                  data = bp_data_young_adult_with_diastolic)
+
+summary(diastolic_lqmm_fit)
+```
+
+
+```{r, plot diastolic overall fit}
+individual_line_width_peripheral <- 0.8
+individual_line_width_central <- 1.8
+individual_alpha_lines <- 0.4
+individual_alpha_points <- 0.8
+individual_size_points <- 0.8
+peripheral_line_type <- "longdash"
+
+fitted_values <- 
+  as.data.frame(predict(diastolic_lqmm_fit))
+colnames(fitted_values) <- paste0("diastolic_lqmm_fit_", colnames(fitted_values))
+
+bp_data_young_adult_with_diastolic_with_fit <-
+  cbind(bp_data_young_adult_with_diastolic,
+        fitted_values)
+diastolic_lqmm_plot <-
+  ggplot(bp_data_young_adult_with_diastolic_with_fit,
+        aes(x = age_to_use,
+            colour=Sex.at.birth...Birth)
+       ) +
+  geom_line( 
+       aes(y = diastolic_lqmm_fit_0.1),
+       linewidth=individual_line_width_peripheral,
+       alpha=individual_alpha_lines,
+       linetype=peripheral_line_type) +
+  geom_line( 
+       aes(y = diastolic_lqmm_fit_0.5),
+       linewidth=individual_line_width_central,
+       alpha=individual_alpha_lines) +
+  geom_line( 
+       aes(y = diastolic_lqmm_fit_0.9),
+       linewidth=individual_line_width_peripheral,
+       alpha=individual_alpha_lines,
+       linetype=peripheral_line_type) +
+  geom_point(
+    aes(y=diastolic_imputation_0),
+    size=individual_size_points,
+    alpha=individual_alpha_points
+  ) +
+  labs(title = "LQMM Fitted Lines for Different Quantiles",
+       x = "Age (years)",
+       y = "Diastolic blood pressure (mmHg)") +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_y_continuous(
+      limits=c(50,120),
+      breaks=c(seq(50,120, by=10)))+
+  themepowerpoint
+diastolic_lqmm_plot
+ggsave(file="./diastolic_lqmm_plot.tif",
+       plot=diastolic_lqmm_plot, 
+       device="tiff", 
+       width=10, height=5 , 
+       compression = "lzw")
+
+```
+
+
+
+```{r, multilevel quantile regression of diastolic blood pressure with age and sex}
+#new_data <- 
+#  data.frame(age_to_use=30,
+#             Sex.at.birth...Birth="Male",
+#             id=99999)
+#
+#a <- predict(systolic_lqmm_fit, 
+#             newdata = new_data,
+#             level = 0)
+#tau = 0.5
+#50th centile results:
+#Fixed effects:
+#                             Value Std. Error lower bound upper bound  Pr(>|t|)    
+#(Intercept)              116.95026    5.03501   106.83202    127.0685 < 2.2e-16 ***
+#age_to_use                -0.12090    0.16939    -0.46130      0.2195    0.4788    
+#Sex.at.birth...BirthMale   9.28055    2.04537     5.17023     13.3909 3.702e-05 ***
+
+
+
+#Fixed effects:
+#                            Value Std. Error lower bound upper bound  Pr(>|t|)    
+#(Intercept)              67.30351    3.37066    60.52991     74.0771 < 2.2e-16 ***
+#age_to_use                0.14755    0.12107    -0.09574      0.3908  0.228767    
+#Sex.at.birth...BirthMale  4.63254    1.47732     1.66375      7.6013  0.002896 ** 
+
+print("Female imputed 1 systolic goes from this at 20")  
+116.95026 + 0.12090 * 20
+print("Female imputed 1 diastolic goes from this at 20")  
+67.30351 + 0.14755 * 20
+print("******")
+print("Female imputed 1 systolic goes from to this at 40")  
+116.95026 + 0.12090 * 40
+print("Female imputed 1 diastolic goes from to this at 40")  
+67.30351 + 0.14755 * 40
+print("******")
+print("Male imputed 1 systolic goes from this at 20")  
+116.95026 + 0.12090 * 20 + 9.28055
+print("Male imputed 1 diastolic goes from this at 20")  
+67.30351 + 0.14755 * 20 + 4.63254
+print("******")
+print("Male imputed 1 systolic goes from to this at 40")  
+116.95026 + 0.12090 * 40 + 9.28055
+print("Male imputed 1 diastolic goes from to this at 40")  
+67.30351 + 0.14755 * 40 + 4.63254
+  
+print("Report the numbers at age 30:")
+
+print("Female imputed 1 systolic goes from this at 30")  
+116.95026 + 0.12090 * 30
+print("Female imputed 1 diastolic goes from this at 30")  
+67.30351 + 0.14755 * 30
+print("******")
+print("Male imputed 1 systolic goes from to this at 30")  
+116.95026 + 0.12090 * 30 + 9.28055
+print("Male imputed 1 diastolic goes from to this at 30")  
+67.30351 + 0.14755 * 30 + 4.63254
+```
+
+#########################################
+Systolic models with covariates
+#########################################
+
+
+```{r, fit multilevel_with_age_and_sex systolic}
+multilevel_with_age_and_sex_systolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     systolic_imputation_1 ~
+     age_to_use +
+     Sex.at.birth...Birth +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_sex_systolic <- summary(multilevel_with_age_and_sex_systolic)
+multilevel_with_age_and_sex_systolic_age_estimate <-
+  summary_multilevel_with_age_and_sex_systolic$coefficients["age_to_use", "Estimate"]
+multilevel_with_age_and_sex_systolic_age_stderr <-
+  summary_multilevel_with_age_and_sex_systolic$coefficients["age_to_use", "Std. Error"]
+multilevel_with_age_and_sex_systolic_r_squared <-
+  rsquared(multilevel_with_age_and_sex_systolic)$Conditional
+```
+
+
+```{r, fit multilevel_with_age_and_weight systolic}
+multilevel_with_age_and_weight_systolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     systolic_imputation_1 ~
+     age_to_use +
+     interpolated_weight +
+     Sex.at.birth...Birth +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_weight_systolic <- summary(multilevel_with_age_and_weight_systolic)
+multilevel_with_age_and_weight_systolic_age_estimate <-
+  summary_multilevel_with_age_and_weight_systolic$coefficients["age_to_use", "Estimate"]
+multilevel_with_age_and_weight_systolic_age_stderr <-
+  summary_multilevel_with_age_and_weight_systolic$coefficients["age_to_use", "Std. Error"]
+multilevel_with_age_and_weight_systolic_weight_estimate <-
+  summary_multilevel_with_age_and_weight_systolic$coefficients["interpolated_weight", "Estimate"]
+multilevel_with_age_and_weight_systolic_weight_stderr <-
+  summary_multilevel_with_age_and_weight_systolic$coefficients["interpolated_weight", "Std. Error"]
+multilevel_with_age_and_weight_systolic_r_squared <-
+  rsquared(multilevel_with_age_and_weight_systolic)$Conditional
+```
+
+
+```{r, multilevel_with_age_and_weight_and_fludro systolic}
+multilevel_with_age_and_weight_and_fludro_systolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     systolic_imputation_1 ~
+     age_to_use +
+     interpolated_weight +
+     Sex.at.birth...Birth +
+     total_daily_hydrocortisone_equivalent_at_visit +
+     total_daily_fludro_dose_carried_to_use_with_zero +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_weight_and_fludro_systolic <-
+  summary(multilevel_with_age_and_weight_and_fludro_systolic)
+
+multilevel_with_age_and_weight_and_fludro_systolic_age_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "age_to_use", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_systolic_age_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "age_to_use", "Std. Error"]
+
+multilevel_with_age_and_weight_and_fludro_systolic_weight_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "interpolated_weight", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_systolic_weight_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "interpolated_weight", "Std. Error"]
+
+multilevel_with_age_and_weight_and_fludro_systolic_hydro_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "total_daily_hydrocortisone_equivalent_at_visit", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_systolic_hydro_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "total_daily_hydrocortisone_equivalent_at_visit", "Std. Error"]
+
+multilevel_with_age_and_weight_and_fludro_systolic_fludro_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "total_daily_fludro_dose_carried_to_use_with_zero", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_systolic_fludro_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_systolic$coefficients[
+    "total_daily_fludro_dose_carried_to_use_with_zero", "Std. Error"]
+
+multilevel_with_age_and_weight_and_fludro_systolic_r_squared <-
+  rsquared(multilevel_with_age_and_weight_and_fludro_systolic)$Conditional
+```
+
+#########################################
+diastolic models with covariates
+#########################################
+
+
+```{r, fit multilevel_with_age_and_sex diastolic}
+multilevel_with_age_and_sex_diastolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     diastolic_imputation_1 ~
+     age_to_use +
+     Sex.at.birth...Birth +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_sex_diastolic <- summary(multilevel_with_age_and_sex_diastolic)
+multilevel_with_age_and_sex_diastolic_age_estimate <-
+  summary_multilevel_with_age_and_sex_diastolic$coefficients["age_to_use", "Estimate"]
+multilevel_with_age_and_sex_diastolic_age_stderr <-
+  summary_multilevel_with_age_and_sex_diastolic$coefficients["age_to_use", "Std. Error"]
+multilevel_with_age_and_sex_diastolic_r_squared <-
+  rsquared(multilevel_with_age_and_sex_diastolic)$Conditional
+```
+
+
+```{r, fit multilevel_with_age_and_weight diastolic}
+multilevel_with_age_and_weight_diastolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     diastolic_imputation_1 ~
+     age_to_use +
+     interpolated_weight +
+     Sex.at.birth...Birth +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_weight_diastolic <- 
+  summary(multilevel_with_age_and_weight_diastolic)
+multilevel_with_age_and_weight_diastolic_age_estimate <-
+  summary_multilevel_with_age_and_weight_diastolic$coefficients["age_to_use", "Estimate"]
+multilevel_with_age_and_weight_diastolic_age_stderr <-
+  summary_multilevel_with_age_and_weight_diastolic$coefficients["age_to_use", "Std. Error"]
+multilevel_with_age_and_weight_diastolic_weight_estimate <-
+  summary_multilevel_with_age_and_weight_diastolic$coefficients["interpolated_weight", "Estimate"]
+multilevel_with_age_and_weight_diastolic_weight_stderr <-
+  summary_multilevel_with_age_and_weight_diastolic$coefficients["interpolated_weight", "Std. Error"]
+multilevel_with_age_and_weight_diastolic_r_squared <-
+  rsquared(multilevel_with_age_and_weight_diastolic)$Conditional
+```
+
+
+```{r, multilevel_with_age_and_weight_and_fludro diastolic}
+multilevel_with_age_and_weight_and_fludro_diastolic <-
+  lmer(data = 
+         bp_data_young_adult,
+   formula = 
+     diastolic_imputation_1 ~
+     age_to_use +
+     interpolated_weight +
+     Sex.at.birth...Birth +
+     total_daily_hydrocortisone_equivalent_at_visit +
+     total_daily_fludro_dose_carried_to_use_with_zero +
+     (1 | id) + (1 | Centre.Name...Centre) )
+summary_multilevel_with_age_and_weight_and_fludro_diastolic <-
+  summary(multilevel_with_age_and_weight_and_fludro_diastolic)
+multilevel_with_age_and_weight_and_fludro_diastolic_age_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "age_to_use", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_diastolic_age_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "age_to_use", "Std. Error"]
+multilevel_with_age_and_weight_and_fludro_diastolic_weight_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "interpolated_weight", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_diastolic_weight_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "interpolated_weight", "Std. Error"]
+multilevel_with_age_and_weight_and_fludro_diastolic_hydro_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "total_daily_hydrocortisone_equivalent_at_visit", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_diastolic_hydro_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "total_daily_hydrocortisone_equivalent_at_visit", "Std. Error"]
+multilevel_with_age_and_weight_and_fludro_diastolic_fludro_estimate <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "total_daily_fludro_dose_carried_to_use_with_zero", "Estimate"]
+multilevel_with_age_and_weight_and_fludro_diastolic_fludro_stderr <-
+  summary_multilevel_with_age_and_weight_and_fludro_diastolic$coefficients[
+    "total_daily_fludro_dose_carried_to_use_with_zero", "Std. Error"]
+
+multilevel_with_age_and_weight_and_fludro_diastolic_r_squared <-
+  rsquared(multilevel_with_age_and_weight_and_fludro_diastolic)$Conditional
+```
+
+*****************************************
+
+Visualisations
+
+*****************************************
+
+
+
+
+ESPE 2024 abstract said:
+
+Multivariable LMEM showed that an increase in weight had a significant effect on systolic (estimate=0.2, standard error (SE)=0.05, p<0.001, R2cond=0.44) and diastolic (estimate=0.1, SE=0.04, p=0.02, R2cond=0.29) blood pressure, whereas the models showed an insignificant effect of either hydrocortisone or fludrocortisone dosing (p>0.05).
+
+To display this we plot the weight coefficient, hydrocortisone coefficient and fludrocortisone coefficient for both systolic and diastolic
+
+i.e. plot
+multilevel_with_age_and_weight_and_fludro_systolic_weight_estimate
+multilevel_with_age_and_weight_and_fludro_systolic_weight_stderr
+
+multilevel_with_age_and_weight_and_fludro_systolic_hydro_estimate
+multilevel_with_age_and_weight_and_fludro_systolic_hydro_stderr
+
+multilevel_with_age_and_weight_and_fludro_systolic_fludro_estimate
+multilevel_with_age_and_weight_and_fludro_systolic_fludro_stderr
+
+```{r, plot of effect sizes}
+effect_size_data <-
+  data.frame(
+    metric=c(
+  "Weight_sys_mean",
+  "Fludro_sys_mean",
+  "Hydro_sys_mean",
+  "Weight_dias_mean",
+  "Fludro_dias_mean",
+  "Hydro_dias_mean"),
+    position=c(
+    "Weight_sys",
+    "Fludro_sys",
+    "Hydro_sys",
+    "Weight_dias",
+    "Fludro_dias",
+    "Hydro_dias"),
+  value=c(multilevel_with_age_and_weight_and_fludro_systolic_weight_estimate,
+          
+          multilevel_with_age_and_weight_and_fludro_systolic_fludro_estimate,
+          
+          multilevel_with_age_and_weight_and_fludro_systolic_hydro_estimate,
+          
+          multilevel_with_age_and_weight_and_fludro_diastolic_weight_estimate,
+          
+          multilevel_with_age_and_weight_and_fludro_diastolic_fludro_estimate,
+          
+          multilevel_with_age_and_weight_and_fludro_diastolic_hydro_estimate
+          
+           ))
+
+#extract a column for systolic or diastolic
+effect_size_data$cardiac_cycle <-
+  ifelse(grepl(x=effect_size_data$metric,
+               pattern="sys"),
+         "systole",
+         "diastole")
+
+confidence_intervals <-
+  data.frame(
+    metric=c(
+      "Weight_sys",
+      "Fludro_sys",
+      "Hydro_sys",
+      "Weight_dias",
+      "Fludro_dias",
+      "Hydro_dias"
+    ),
+    
+    lower=c(
+          multilevel_with_age_and_weight_and_fludro_systolic_weight_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_weight_stderr,
+          multilevel_with_age_and_weight_and_fludro_systolic_fludro_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_fludro_stderr,
+          multilevel_with_age_and_weight_and_fludro_systolic_hydro_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_hydro_stderr,
+          
+          multilevel_with_age_and_weight_and_fludro_diastolic_weight_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_weight_stderr,
+          multilevel_with_age_and_weight_and_fludro_diastolic_fludro_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_fludro_stderr,
+          multilevel_with_age_and_weight_and_fludro_diastolic_hydro_estimate - 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_hydro_stderr
+        
+    ),
+    
+    upper=c(
+          multilevel_with_age_and_weight_and_fludro_systolic_weight_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_weight_stderr,
+          multilevel_with_age_and_weight_and_fludro_systolic_fludro_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_fludro_stderr,
+          multilevel_with_age_and_weight_and_fludro_systolic_hydro_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_systolic_hydro_stderr,
+          
+          multilevel_with_age_and_weight_and_fludro_diastolic_weight_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_weight_stderr,
+          multilevel_with_age_and_weight_and_fludro_diastolic_fludro_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_fludro_stderr,
+          multilevel_with_age_and_weight_and_fludro_diastolic_hydro_estimate + 
+            1.96 * multilevel_with_age_and_weight_and_fludro_diastolic_hydro_stderr
+        
+    )
+  )
+
+#extract a column for systolic or diastolic
+confidence_intervals$cardiac_cycle <-
+  ifelse(grepl(x=confidence_intervals$metric,
+               pattern="sys"),
+         "systole",
+         "diastole")
+
+#to just give a basic visualisation for a poster
+effect_size_plot <-
+  ggplot(data=effect_size_data) +
+  geom_hline(yintercept=0, 
+             colour="black", 
+             linewidth=2,
+             linetype="longdash") +
+  geom_errorbar(data=confidence_intervals,
+                aes(x=metric,
+                     ymin=lower,
+                     ymax=upper,
+                colour=cardiac_cycle),
+                width=.6,
+                linewidth=2) +
+  labs(x=NULL,
+       y=NULL) +
+  scale_colour_manual(
+    values = c(
+    "systole" = "purple",
+    "diastole" = "orange")) +
+  geom_point(
+    data=subset(effect_size_data,
+                  metric=="Weight_sys_mean" |
+                  metric=="Fludro_sys_mean" |
+                  metric=="Hydro_sys_mean" |
+                  metric=="Weight_dias_mean" |
+                  metric=="Fludro_dias_mean" |
+                  metric=="Hydro_dias_mean"),
+    aes(x=position, 
+        y=value,
+        colour=cardiac_cycle),
+    size=12,
+    shape="square") +
+  coord_flip() +
+  themepowerpoint
+
+effect_size_plot
+
+ggsave(filename=paste0("effect_size_plot_for_young_adult_poster.tif"),
+#       path=(), 
+       plot = effect_size_plot, 
+       device="tiff",  
+       width=15, 
+       height=4, 
+       compression = "lzw", 
+       limitsize=F)
+```
+
+
+```{r, total_daily_fludro_dose_carried_to_use_with_zero dot plot}
+specific_stack_ratio <- 20
+specific_dot_size <- 1.5
+
+data_to_plot <- 
+  bp_data_young_adult
+
+mean_values <- data_to_plot %>%
+  group_by(Sex.at.birth...Birth) %>%
+  summarise(total_daily_fludro_dose_carried_to_use_with_zero  = 
+              mean(total_daily_fludro_dose_carried_to_use_with_zero))
+mean_values$x = c(0.5, 1.5)
+mean_values$xend = c(1.5, 2.5)
+
+summary_current_fludro <-
+  ggplot(data=data_to_plot, 
+         aes(colour=Sex.at.birth...Birth,
+             x=Sex.at.birth...Birth, 
+             y=total_daily_fludro_dose_carried_to_use_with_zero)) +
+  #for geom_violin the alpha only affects the fill not the outline, so we hack to have a zero outline
+  geom_violin(aes(fill=Sex.at.birth...Birth), alpha=0.1, linewidth=0) +
+  geom_dotplot(
+    aes(fill=Sex.at.birth...Birth),
+    binwidth = 0.01,
+    binaxis = "y", 
+               stackdir = "center",
+               stackratio = specific_stack_ratio,
+               dotsize = specific_dot_size) +
+  geom_segment(data=mean_values,
+               aes(x = x, xend = xend, 
+                   y = total_daily_fludro_dose_carried_to_use_with_zero , 
+                   yend = total_daily_fludro_dose_carried_to_use_with_zero ,
+                   colour=Sex.at.birth...Birth), 
+               #size = 0.5, 
+               linewidth=2,
+               alpha = 0.4
+) +
+  labs(x=NULL,
+       y=NULL) +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_fill_manual(values = c("Male" = "blue", "Female" = "red")) +
+  theme(panel.background = element_rect(fill="white",colour="azure2"), legend.position = "none",
+                          panel.grid.major = element_line(colour="azure2") ,
+                          axis.line.x.bottom = element_line(colour="black") ,
+                          axis.line.y.left = element_line(colour="black") ,
+                          plot.title = element_blank(),
+                          plot.subtitle = element_text(size=9, hjust=0.5),
+                          axis.text=element_text(size=6),
+                          axis.title=element_text(size=6, face="bold"),
+                          #change stuff for facet labels
+                          strip.background =element_rect(fill="black", colour="black"),
+                          strip.text = element_text(colour = 'white', size=6))
+
+summary_current_fludro
+
+dir.create("summary_dot_plots")
+ggsave(filename=paste0("summary_current_fludro.tif"),
+       path = ("summary_dot_plots"), 
+       plot = summary_current_fludro, 
+       device="tiff",  
+       width=4, 
+       height=4, 
+       compression = "lzw", 
+       limitsize=F)
+
+```
+
+
+```{r, total_daily_hydrocortisone_equivalent_at_visit dot plot}
+specific_stack_ratio <- 20
+specific_dot_size <- 1.5
+
+data_to_plot <- 
+  bp_data_young_adult
+
+mean_values <- data_to_plot %>%
+  group_by(Sex.at.birth...Birth) %>%
+  summarise(total_daily_hydrocortisone_equivalent_at_visit  = 
+              mean(total_daily_hydrocortisone_equivalent_at_visit, na.rm=T))
+mean_values$x = c(0.5, 1.5)
+mean_values$xend = c(1.5, 2.5)
+
+summary_current_hydro <-
+  ggplot(data=data_to_plot, 
+         aes(colour=Sex.at.birth...Birth,
+             x=Sex.at.birth...Birth, 
+             y=total_daily_hydrocortisone_equivalent_at_visit)) +
+  #for geom_violin the alpha only affects the fill not the outline, so we hack to have a zero outline
+  geom_violin(aes(fill=Sex.at.birth...Birth), alpha=0.1, linewidth=0) +
+  geom_dotplot(
+    aes(fill=Sex.at.birth...Birth),
+    binwidth = 0.01,
+    binaxis = "y", 
+               stackdir = "center",
+               stackratio = specific_stack_ratio,
+               dotsize = specific_dot_size) +
+  geom_segment(data=mean_values,
+               aes(x = x, xend = xend, 
+                   y = total_daily_hydrocortisone_equivalent_at_visit , 
+                   yend = total_daily_hydrocortisone_equivalent_at_visit ,
+                   colour=Sex.at.birth...Birth), 
+               #size = 0.5, 
+               linewidth=2,
+               alpha = 0.4
+) +
+  labs(x=NULL,
+       y=NULL) +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_fill_manual(values = c("Male" = "blue", "Female" = "red")) +
+  theme(panel.background = element_rect(fill="white",colour="azure2"), legend.position = "none",
+                          panel.grid.major = element_line(colour="azure2") ,
+                          axis.line.x.bottom = element_line(colour="black") ,
+                          axis.line.y.left = element_line(colour="black") ,
+                          plot.title = element_blank(),
+                          plot.subtitle = element_text(size=9, hjust=0.5),
+                          axis.text=element_text(size=6),
+                          axis.title=element_text(size=6, face="bold"),
+                          #change stuff for facet labels
+                          strip.background =element_rect(fill="black", colour="black"),
+                          strip.text = element_text(colour = 'white', size=6))
+
+summary_current_hydro
+
+dir.create("summary_dot_plots")
+ggsave(filename=paste0("summary_current_hydro.tif"),
+       path = ("summary_dot_plots"), 
+       plot = summary_current_hydro, 
+       device="tiff",  
+       width=4, 
+       height=4, 
+       compression = "lzw", 
+       limitsize=F)
+
+```
+
+
+```{r, interpolated_weight dot plot}
+specific_stack_ratio <- 100
+specific_dot_size <- 1.5
+
+data_to_plot <- 
+  bp_data_young_adult
+
+mean_values <- data_to_plot %>%
+  group_by(Sex.at.birth...Birth) %>%
+  summarise(interpolated_weight  = 
+              mean(interpolated_weight, na.rm=T))
+mean_values$x = c(0.5, 1.5)
+mean_values$xend = c(1.5, 2.5)
+
+summary_current_weight <-
+  ggplot(data=data_to_plot, 
+         aes(colour=Sex.at.birth...Birth,
+             x=Sex.at.birth...Birth, 
+             y=interpolated_weight)) +
+  #for geom_violin the alpha only affects the fill not the outline, so we hack to have a zero outline
+  geom_violin(aes(fill=Sex.at.birth...Birth), alpha=0.1, linewidth=0) +
+  geom_dotplot(
+    aes(fill=Sex.at.birth...Birth),
+    binwidth = 0.01,
+    binaxis = "y", 
+               stackdir = "center",
+               stackratio = specific_stack_ratio,
+               dotsize = specific_dot_size) +
+  geom_segment(data=mean_values,
+               aes(x = x, xend = xend, 
+                   y = interpolated_weight , 
+                   yend = interpolated_weight ,
+                   colour=Sex.at.birth...Birth), 
+               #size = 0.5, 
+               linewidth=2,
+               alpha = 0.4
+) +
+  labs(x=NULL,
+       y=NULL) +
+  scale_color_manual(values = c("Male" = "blue", "Female" = "red")) +
+  scale_fill_manual(values = c("Male" = "blue", "Female" = "red")) +
+  theme(panel.background = element_rect(fill="white",colour="azure2"), legend.position = "none",
+                          panel.grid.major = element_line(colour="azure2") ,
+                          axis.line.x.bottom = element_line(colour="black") ,
+                          axis.line.y.left = element_line(colour="black") ,
+                          plot.title = element_blank(),
+                          plot.subtitle = element_text(size=9, hjust=0.5),
+                          axis.text=element_text(size=6),
+                          axis.title=element_text(size=6, face="bold"),
+                          #change stuff for facet labels
+                          strip.background =element_rect(fill="black", colour="black"),
+                          strip.text = element_text(colour = 'white', size=6))
+
+summary_current_weight
+
+dir.create("summary_dot_plots")
+ggsave(filename=paste0("summary_current_weight.tif"),
+       path = ("summary_dot_plots"), 
+       plot = summary_current_weight, 
+       device="tiff",  
+       width=4, 
+       height=4, 
+       compression = "lzw", 
+       limitsize=F)
+
+```
+
+
+
+
+
+
+
+
+
